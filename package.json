@@ -1,6 +1,9 @@
 {
   "name": "coffee-tracker",
   "version": "1.0.0",
+  "engines": {
+    "node": "6.4.0"
+  },
   "scripts": {
     "dev": "node bin/www",
     "start": "./node_modules/.bin/nodemon --debug bin/www",
