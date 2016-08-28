@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import Drawer from 'material-ui/Drawer';
 import { connect } from 'react-redux';
 import MenuItem from 'material-ui/MenuItem';
@@ -20,7 +20,6 @@ class App extends Component {
   }
   handleTouchTap() {
     // This prevents ghost click.
-    // eslint-disable-next-line no-undef
     event.preventDefault();
     this.setState({
       open: !this.state.open,
@@ -52,11 +51,14 @@ class App extends Component {
           <MenuItem onTouchTap={this.handlePeopleLink}>People</MenuItem>
           <MenuItem onTouchTap={this.handleOutingLink}>Outings</MenuItem>
         </Drawer>
+        {this.props.children}
         <Footer />
       </div>);
   }
 }
 
 App.displayName = 'App';
-
+App.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 export default connect()(App);

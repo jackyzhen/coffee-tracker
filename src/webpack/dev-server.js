@@ -38,7 +38,7 @@ app.use((req, res, next) => {
         res.setHeader('WWW-Authenticate', 'Basic realm="example"');
         return res.end('Access denied');
       }
-      return next();
+      next();
     });
 });
 

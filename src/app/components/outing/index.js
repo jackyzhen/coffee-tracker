@@ -2,7 +2,9 @@ import React, { PropTypes } from 'react';
 
 export default function Outing() {
   return (
-    <div />
+    <div>
+    outing test
+    </div>
     );
 }
 

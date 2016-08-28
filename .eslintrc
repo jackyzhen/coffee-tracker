@@ -20,6 +20,10 @@
   "globals": {
     // Mocha
     "describe": true,
-    "it": true
+    "it": true,
+    "window": true,
+    "document": true,
+    "fetch": true,
+    "event": true
   }
 }

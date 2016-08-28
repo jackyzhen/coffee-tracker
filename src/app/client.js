@@ -2,9 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
 import 'isomorphic-fetch';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-
 import rootReducer from './reducer';
 import { getRouter } from './routes';
 
@@ -13,7 +13,7 @@ import { getRouter } from './routes';
 injectTapEventPlugin();
 
 function configureMiddlewares() {
-  const middlewares = [];
+  const middlewares = [thunk];
 
   if (process.env.NODE_ENV !== 'production') {
     // eslint-disable-next-line global-require
@@ -46,17 +46,16 @@ function configureMiddlewares() {
 const middlewares = configureMiddlewares();
 
 const store = createStore(
+  rootReducer,
   compose(
     applyMiddleware(...middlewares),
-    // eslint-disable-next-line no-undef
     window.devToolsExtension ? window.devToolsExtension() : f => f
   )
 );
 
 ReactDOM.render(
   <Provider store={store}>
-    {getRouter()}
+    {getRouter(store)}
   </Provider>,
-  // eslint-disable-next-line no-undef
   document.getElementById('app')
 );

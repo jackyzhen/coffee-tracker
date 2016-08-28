@@ -2,7 +2,9 @@ import React, { PropTypes } from 'react';
 
 export default function People() {
   return (
-    <div />
+    <div>
+      people testing
+    </div>
     );
 }
 
