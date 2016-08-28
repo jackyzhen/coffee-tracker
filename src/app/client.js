@@ -3,9 +3,14 @@ import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import 'isomorphic-fetch';
-import rootReducer from './reducer';
-import getRouter from './routes';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 
+import rootReducer from './reducer';
+import { getRouter } from './routes';
+
+// Needed for onTouchTap
+// http://stackoverflow.com/a/34015469/988941
+injectTapEventPlugin();
 
 function configureMiddlewares() {
   const middlewares = [];
@@ -41,7 +46,6 @@ function configureMiddlewares() {
 const middlewares = configureMiddlewares();
 
 const store = createStore(
-  rootReducer,
   compose(
     applyMiddleware(...middlewares),
     // eslint-disable-next-line no-undef
@@ -51,7 +55,7 @@ const store = createStore(
 
 ReactDOM.render(
   <Provider store={store}>
-    {getRouter(store)}
+    {getRouter()}
   </Provider>,
   // eslint-disable-next-line no-undef
   document.getElementById('app')
