@@ -18,7 +18,7 @@ module.exports = {
   output: {
     path: '/',
     filename: 'bundle.js',
-    publicPath: `http://${hostname}:${port}/scripts/`,
+    publicPath: `http://${hostname}:${port}/`,
   },
 
   resolve: {

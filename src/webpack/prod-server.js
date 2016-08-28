@@ -18,7 +18,7 @@ app.use((req, res, next) => {
         res.setHeader('WWW-Authenticate', 'Basic realm="example"');
         return res.end('Access denied');
       }
-      return next();
+      next();
     });
 });
 
@@ -34,6 +34,11 @@ app.use('/graphql', (req, res, next) => {
       },
     }))(req, res);
 });
+
+// serve static files
+app.use(express.static('dist', {
+  cacheControl: false,
+}));
 
 // redirect all 404s to index.html
 app.use((req, res) => {

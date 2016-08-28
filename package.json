@@ -6,7 +6,7 @@
   },
   "scripts": {
     "dev": "node src/webpack/dev-server.js",
-    "deploy": "node src/webpack/server.js",
+    "deploy": "node src/webpack/prod-server.js",
     "heroku-postbuild": "webpack -p --config src/webpack/prod.config.js",
     "lint": "eslint src"
   },
