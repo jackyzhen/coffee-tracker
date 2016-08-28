@@ -55,7 +55,7 @@ const store = createStore(
 
 ReactDOM.render(
   <Provider store={store}>
-    {getRouter(store)}
+    {getRouter()}
   </Provider>,
   document.getElementById('app')
 );

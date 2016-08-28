@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import People from '../components/people';
 import { getAllPeople, fetchAllPeople } from '../reducers/people';
 
 
@@ -15,7 +14,9 @@ class PeopleContainer extends Component {
 
   render() {
     return (
-      <People />
+      <div>
+        {this.props.children}
+      </div>
     );
   }
 }
@@ -25,6 +26,7 @@ PeopleContainer.displayName = 'PeopleContainer';
 PeopleContainer.propTypes = {
   allPeople: ImmutablePropTypes.map,
   fetchAllPeople: PropTypes.func.isRequired,
+  children: PropTypes.node.isRequired,
 };
 
 export default connect(

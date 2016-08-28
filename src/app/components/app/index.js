@@ -30,13 +30,13 @@ class App extends Component {
     this.setState({
       open: false,
     });
-    browserHistory.push('people');
+    browserHistory.push('/people');
   }
   handleOutingLink() {
     this.setState({
       open: false,
     });
-    browserHistory.push('outing');
+    browserHistory.push('/outing');
   }
   render() {
     return (
