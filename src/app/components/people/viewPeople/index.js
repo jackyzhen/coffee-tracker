@@ -5,6 +5,7 @@ import { browserHistory } from 'react-router';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import Paper from 'material-ui/Paper';
 import { getAllPeople } from '../../../reducers/people';
 
 
@@ -21,7 +22,7 @@ class ViewPerson extends Component {
     browserHistory.push(`people/edit/${allPeopleArray[row[0]].get('id')}`);
   }
   addUser() {
-    browserHistory.push("people/add");
+    browserHistory.push('people/add');
   }
   personRow() {
     const { allPeople } = this.props;
@@ -38,9 +39,14 @@ class ViewPerson extends Component {
   }
   render() {
     return (
-      <div>
-        <Table onRowSelection={this.editUser}>
-          <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+      <Paper
+        style={{
+          width: '100%',
+          marginBottom: '3%',
+        }}
+      >
+        <Table onRowSelection={this.editUser} >
+          <TableHeader adjustForCheckbox={false} displaySelectAll={false} style={{ color: '#3d3327' }}>
             <TableRow>
               <TableHeaderColumn>Name</TableHeaderColumn>
               <TableHeaderColumn>Coffees Drank</TableHeaderColumn>
@@ -52,10 +58,10 @@ class ViewPerson extends Component {
             {this.personRow()}
           </TableBody>
         </Table>
-        <FloatingActionButton onTouchTap={this.addUser} style={{ position: 'fixed', bottom: '5%', right: '3%' }}>
+        <FloatingActionButton onTouchTap={this.addUser} backgroundColor="#6d8165" style={{ position: 'fixed', bottom: '5%', right: '3%', }}>
           <ContentAdd />
         </FloatingActionButton>
-      </div>
+      </Paper>
     );
   }
 }

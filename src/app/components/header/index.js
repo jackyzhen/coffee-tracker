@@ -8,7 +8,7 @@ export default function Header({ onMenuTap }) {
       <AppBar
         title={<span>Coffee Tracker</span>}
         onLeftIconButtonTouchTap={onMenuTap}
-        style={{ background: '#6F4E37' }}
+        style={{ background: '#564032' }}
       />
     </div>
     );
