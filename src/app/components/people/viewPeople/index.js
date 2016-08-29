@@ -3,6 +3,8 @@ import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowCol
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import ContentAdd from 'material-ui/svg-icons/content/add';
 import { getAllPeople } from '../../../reducers/people';
 
 
@@ -18,42 +20,41 @@ class ViewPerson extends Component {
     const allPeopleArray = allPeople.toArray();
     browserHistory.push(`people/edit/${allPeopleArray[row[0]].get('id')}`);
   }
+  addUser() {
+    browserHistory.push("people/add");
+  }
   personRow() {
     const { allPeople } = this.props;
     return allPeople.map(person => {
       return (
         <TableRow key={person.id}>
-          <TableRowColumn>{person.get('id')}</TableRowColumn>
           <TableRowColumn>{person.get('name')}</TableRowColumn>
           <TableRowColumn>{person.get('number_coffee_drank')}</TableRowColumn>
           <TableRowColumn>{person.get('number_coffee_paid')}</TableRowColumn>
           <TableRowColumn>${person.get('coffee_price')}</TableRowColumn>
-          <TableRowColumn>{person.get('created_at')}</TableRowColumn>
-          <TableRowColumn>{person.get('updated_at')}</TableRowColumn>
         </TableRow>
       );
     });
   }
-
   render() {
     return (
       <div>
         <Table onRowSelection={this.editUser}>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>
-              <TableHeaderColumn>ID</TableHeaderColumn>
               <TableHeaderColumn>Name</TableHeaderColumn>
-              <TableHeaderColumn>Coffees</TableHeaderColumn>
-              <TableHeaderColumn>Paid</TableHeaderColumn>
-              <TableHeaderColumn>Price</TableHeaderColumn>
-              <TableHeaderColumn>Created At</TableHeaderColumn>
-              <TableHeaderColumn>Updated At</TableHeaderColumn>
+              <TableHeaderColumn>Coffees Drank</TableHeaderColumn>
+              <TableHeaderColumn>Coffees Paid</TableHeaderColumn>
+              <TableHeaderColumn>Coffee Price</TableHeaderColumn>
             </TableRow>
           </TableHeader>
-          <TableBody displayRowCheckbox={false}>
+          <TableBody displayRowCheckbox={false} showRowHover>
             {this.personRow()}
           </TableBody>
         </Table>
+        <FloatingActionButton onTouchTap={this.addUser} style={{ position: 'fixed', bottom: '5%', right: '3%' }}>
+          <ContentAdd />
+        </FloatingActionButton>
       </div>
     );
   }

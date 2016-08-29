@@ -1,24 +1,15 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { getAllPeople, fetchAllPeople } from '../reducers/people';
 
 
-class PeopleContainer extends Component {
-  constructor(props) {
-    super();
-    if (!props.allPeople.size) {
-      props.fetchAllPeople();
-    }
-  }
-
-  render() {
-    return (
-      <div>
-        {this.props.children}
-      </div>
-    );
-  }
+function PeopleContainer(props) {
+  return (
+    <div>
+      {props.children}
+    </div>
+  );
 }
 
 PeopleContainer.displayName = 'PeopleContainer';

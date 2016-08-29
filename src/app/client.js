@@ -5,15 +5,18 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import 'isomorphic-fetch';
 import injectTapEventPlugin from 'react-tap-event-plugin';
+import { browserHistory } from 'react-router';
+import { routerMiddleware } from 'react-router-redux';
 import rootReducer from './reducer';
 import { getRouter } from './routes';
+
 
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941
 injectTapEventPlugin();
 
 function configureMiddlewares() {
-  const middlewares = [thunk];
+  const middlewares = [thunk, routerMiddleware(browserHistory)];
 
   if (process.env.NODE_ENV !== 'production') {
     // eslint-disable-next-line global-require
@@ -55,7 +58,7 @@ const store = createStore(
 
 ReactDOM.render(
   <Provider store={store}>
-    {getRouter()}
+    {getRouter(store)}
   </Provider>,
   document.getElementById('app')
 );

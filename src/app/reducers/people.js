@@ -1,10 +1,11 @@
 import { createReducer } from 'redux-immutablejs';
 import { createSelector } from 'reselect';
 import Immutable from 'immutable';
+import { push } from 'react-router-redux';
 
 // consts
 export const ALL_PEOPLE = 'ALL_PEOPLE';
-
+export const PERSON_EDITED = 'PERSON_EDITED';
 // actions
 
 export function fetchAllPeople() {
@@ -40,6 +41,45 @@ export function fetchAllPeople() {
   };
 }
 
+export function editPerson(id, name, coffeeCost) {
+  return dispatch => {
+    return fetch('/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Basic Y29mZmVldHJhY2tlcjpTdXBlclNlY3JldFBhc3N3b3Jk',
+      },
+      body: JSON.stringify({
+        query: `
+        mutation {
+          editPerson(
+            id: ${id},
+            name: "${name}",
+            coffee_price: ${coffeeCost}
+          ){
+            id
+            name
+            number_coffee_drank
+            number_coffee_paid
+            coffee_price
+            created_at
+            updated_at
+            outingIds
+          }
+        }`,
+      }),
+    })
+    .then(response => response.json())
+    .then(res => {
+      dispatch({
+        type: PERSON_EDITED,
+        payload: res.data.editPerson,
+      });
+      dispatch(push('/people'));
+    });
+  };
+}
+
 // reducers
 const initialState = Immutable.fromJS({});
 
@@ -51,6 +91,10 @@ export default createReducer(initialState, {
       newState = newState.set(person.id, Immutable.fromJS(person));
     });
     return newState;
+  },
+  [PERSON_EDITED]: (state, action) => {
+    const person = action.payload;
+    return state.set(person.id, Immutable.fromJS(person));
   },
 });
 
