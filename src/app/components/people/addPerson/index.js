@@ -75,7 +75,6 @@ class AddPerson extends Component {
 }
 
 AddPerson.propTypes = {
-  params: PropTypes.object,
   addPerson: PropTypes.func.isRequired,
 };
 

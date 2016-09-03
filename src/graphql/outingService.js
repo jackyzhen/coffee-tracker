@@ -27,6 +27,12 @@ module.exports = {
                   const personOutings = args.people_ids.map(personId => ({ outing_id: outing.id, person_id: personId }));
                   return trx.insert(personOutings)
                   .into('person_outing');
+                })
+                .then(() => {
+                  return trx('person').whereIn('id', args.people_ids).increment('number_coffee_drank', 1);
+                })
+                .then(() => {
+                  return trx('person').where('id', args.payer_id).increment('number_coffee_paid', args.people_ids.length);
                 });
     })
     .then(() => {

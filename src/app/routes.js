@@ -7,6 +7,7 @@ import AddPerson from './components/people/addPerson/';
 import EditPerson from './components/people/editPerson/';
 import ViewPeople from './components/people/viewPeople/';
 import ViewOuting from './components/outing/viewOuting';
+import AddOuting from './components/outing/addOuting';
 import { fetchAllPeople } from './reducers/people';
 import { fetchAllOutings } from './reducers/outing';
 
@@ -35,6 +36,7 @@ module.exports = {
           </Route>
           <Route path="outing" component={OutingContainer}>
             <IndexRoute component={ViewOuting} />
+            <Route path="add" component={AddOuting} />
           </Route>
         </Route>
       </Router>);

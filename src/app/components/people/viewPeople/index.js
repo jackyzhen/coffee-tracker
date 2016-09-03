@@ -6,6 +6,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import Paper from 'material-ui/Paper';
+import Divider from 'material-ui/Divider';
 import { getAllPeople } from '../../../reducers/people';
 
 
@@ -32,7 +33,7 @@ class ViewPerson extends Component {
           <TableRowColumn>{person.get('name')}</TableRowColumn>
           <TableRowColumn>{person.get('number_coffee_drank')}</TableRowColumn>
           <TableRowColumn>{person.get('number_coffee_paid')}</TableRowColumn>
-          <TableRowColumn>${person.get('coffee_price')}</TableRowColumn>
+          <TableRowColumn>$ {person.get('coffee_price').toFixed(2)}</TableRowColumn>
         </TableRow>
       );
     });
@@ -45,6 +46,8 @@ class ViewPerson extends Component {
           marginBottom: '3%',
         }}
       >
+        <div style={{ padding: '5px 0px 5px 20px' }}> <h3>People</h3> </div>
+        <Divider />
         <Table onRowSelection={this.editUser} >
           <TableHeader adjustForCheckbox={false} displaySelectAll={false} style={{ color: '#3d3327' }}>
             <TableRow>

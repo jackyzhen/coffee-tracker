@@ -5,6 +5,12 @@ module.exports = {
       return result.map(r => r.person_id);
     });
   },
+  getFullPeopleByOuting: (id, client) => {
+    return client.from('person_outing').innerJoin('person', 'person_outing.person_id', 'person.id').where('outing_id', id).select('person.*')
+    .then(result => {
+      return result;
+    });
+  },
   getPeople: (client) => {
     return client('person').then(result => {
       return result;
