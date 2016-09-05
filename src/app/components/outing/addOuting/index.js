@@ -39,15 +39,20 @@ class AddOuting extends Component {
 
   getWinner() {
     const { splurgingHard } = this.state;
-    let winner = null;
+    let groupings = null;
+
     if (_(splurgingHard).some(p => p.numCoffeePaid === 0)) {
-      winner = _(splurgingHard).filter(p => p.numCoffeePaid === 0).maxBy(p => p.numCoffeeDrank);
+      groupings = _(splurgingHard).filter(p => p.numCoffeePaid === 0).groupBy(p => p.numCoffeeDrank).value();
     } else {
-      winner = _(splurgingHard).maxBy(p => p.numCoffeeDrank / p.numCoffeePaid);
+      groupings = _(splurgingHard).groupBy(p => p.numCoffeeDrank / p.numCoffeePaid).value();
     }
+    const winningGroupKey = _(Object.keys(groupings)).maxBy(key => ~~key);
+    const winningIndex = Math.floor(Math.random() * groupings[winningGroupKey].length);
+    const winner = groupings[winningGroupKey][winningIndex];
     let totalCost = 0;
     splurgingHard.forEach(p => (totalCost += p.coffeePrice));
     winner && (winner.selected = true);
+
     this.setState({
       luckyWinner: winner,
       totalCost,
