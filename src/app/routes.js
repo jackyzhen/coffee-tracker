@@ -8,15 +8,13 @@ import EditPerson from './components/people/editPerson/';
 import ViewPeople from './components/people/viewPeople/';
 import ViewOuting from './components/outing/viewOuting';
 import AddOuting from './components/outing/addOuting';
-import { fetchAllPeople } from './reducers/people';
 import { fetchAllOutings } from './reducers/outing';
 
 
 module.exports = {
   getRouter: (store) => {
     const onEnterRoot = (nextState, replace, callback) => {
-      return store.dispatch(fetchAllPeople())
-              .then(() => store.dispatch(fetchAllOutings()))
+      return store.dispatch(fetchAllOutings())
               .then(() => {
                 callback();
               });

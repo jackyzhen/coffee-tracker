@@ -1,14 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
-import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
-import ImmutablePropTypes from 'react-immutable-proptypes';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
-import { getAllPeople } from '../../../reducers/people';
-
+import { graphql } from 'react-apollo';
+import gql from 'graphql-tag';
 
 class ViewPerson extends Component {
   constructor() {
@@ -18,22 +16,22 @@ class ViewPerson extends Component {
   }
 
   editUser(row) {
-    const { allPeople } = this.props;
-    const allPeopleArray = allPeople.toArray();
-    browserHistory.push(`people/edit/${allPeopleArray[row[0]].get('id')}`);
+    const { data: { allPeople } } = this.props;
+    browserHistory.push(`people/edit/${allPeople[row[0]].id}`);
   }
   addUser() {
     browserHistory.push('people/add');
   }
   personRow() {
-    const { allPeople } = this.props;
+    const { data: { allPeople, loading } } = this.props;
+    if (loading) return <div />;
     return allPeople.map(person => {
       return (
         <TableRow key={person.id}>
-          <TableRowColumn>{person.get('name')}</TableRowColumn>
-          <TableRowColumn>{person.get('number_coffee_drank')}</TableRowColumn>
-          <TableRowColumn>{person.get('number_coffee_paid')}</TableRowColumn>
-          <TableRowColumn>$ {person.get('coffee_price').toFixed(2)}</TableRowColumn>
+          <TableRowColumn>{person.name}</TableRowColumn>
+          <TableRowColumn>{person.number_coffee_drank}</TableRowColumn>
+          <TableRowColumn>{person.number_coffee_paid}</TableRowColumn>
+          <TableRowColumn>$ {person.coffee_price.toFixed(2)}</TableRowColumn>
         </TableRow>
       );
     });
@@ -61,7 +59,7 @@ class ViewPerson extends Component {
             {this.personRow()}
           </TableBody>
         </Table>
-        <FloatingActionButton onTouchTap={this.addUser} backgroundColor="#6d8165" style={{ position: 'fixed', bottom: '5%', right: '3%', }}>
+        <FloatingActionButton onTouchTap={this.addUser} backgroundColor="#6d8165" style={{ position: 'fixed', bottom: '5%', right: '3%' }}>
           <ContentAdd />
         </FloatingActionButton>
       </Paper>
@@ -70,10 +68,29 @@ class ViewPerson extends Component {
 }
 
 ViewPerson.propTypes = {
-  allPeople: ImmutablePropTypes.map,
+  data: PropTypes.shape({
+    loading: PropTypes.bool.isRequired,
+    allPeople: PropTypes.array,
+  }).isRequired,
 };
 
-export default connect(
-state => ({
-  allPeople: getAllPeople(state),
-}))(ViewPerson);
+const AllPeopleForDisplay = gql`
+  query {
+    allPeople: people {
+      id
+      name
+      number_coffee_drank
+      number_coffee_paid
+      coffee_price
+      created_at
+      updated_at
+      outingIds
+    }
+  },
+`;
+
+export default graphql(AllPeopleForDisplay)(ViewPerson);
+// export default connect(
+// state => ({
+//   allPeople: getAllPeople(state),
+// }))(ViewPerson);

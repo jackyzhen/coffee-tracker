@@ -58,7 +58,7 @@ class ViewOuting extends Component {
             {this.outingRow()}
           </TableBody>
         </Table>
-        <FloatingActionButton onTouchTap={this.addOuting} backgroundColor="#6d8165" style={{ position: 'fixed', bottom: '5%', right: '3%', }}>
+        <FloatingActionButton onTouchTap={this.addOuting} backgroundColor="#6d8165" style={{ position: 'fixed', bottom: '5%', right: '3%' }}>
           <ContentAdd />
         </FloatingActionButton>
       </Paper>

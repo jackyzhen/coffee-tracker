@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
 
 function OutingContainer(props) {
   return (
@@ -15,4 +14,4 @@ OutingContainer.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export default connect()(OutingContainer);
+export default OutingContainer;
