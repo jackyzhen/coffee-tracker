@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import Drawer from 'material-ui/Drawer';
-import { connect } from 'react-redux';
 import MenuItem from 'material-ui/MenuItem';
 import { browserHistory } from 'react-router';
 
@@ -61,4 +60,5 @@ App.displayName = 'App';
 App.propTypes = {
   children: PropTypes.node.isRequired,
 };
-export default connect()(App);
+
+export default App;

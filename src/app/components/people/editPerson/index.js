@@ -1,12 +1,14 @@
 import React, { PropTypes, Component } from 'react';
-import { connect } from 'react-redux';
-import ImmutablePropTypes from 'react-immutable-proptypes';
 import Formsy from 'formsy-react';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import { FormsyText } from 'formsy-material-ui/lib';
+import { graphql } from 'react-apollo';
+import gql from 'graphql-tag';
+import { push } from 'react-router-redux';
+import { connect } from 'react-redux';
 
-import { getAllPeople, editPerson } from '../../../reducers/people';
+// import { getAllPeople, editPerson } from '../../../reducers/people';
 
 class EditPerson extends Component {
   constructor() {
@@ -28,12 +30,17 @@ class EditPerson extends Component {
       canSubmit: false,
     });
   }
-  submitForm(data) {
-    this.props.editPerson(this.props.params.id, data.name, data.price);
+  submitForm({ name, price }) {
+    const { editPerson, params: { id }, push } = this.props;
+    editPerson({ variables: { id, name, coffeeCost: price } })
+    .then(push('/people'));
   }
+
   render() {
-    const { params: { id }, allPeople } = this.props;
-    const person = allPeople.get(~~id);
+    const { data: { person, loading } } = this.props;
+
+    if (loading) return <div />;
+
     return (
       <Paper
         style={{
@@ -54,7 +61,7 @@ class EditPerson extends Component {
             required
             hintText="What is your name?"
             floatingLabelText="Name"
-            value={person.get('name')}
+            value={person.name}
           />
           <FormsyText
             name="price"
@@ -63,7 +70,7 @@ class EditPerson extends Component {
             required
             hintText="How much does your coffee cost?"
             floatingLabelText="Coffee Cost"
-            value={person.get('coffee_price')}
+            value={person.coffee_price}
           />
           <RaisedButton
             style={{
@@ -80,16 +87,63 @@ class EditPerson extends Component {
   }
 }
 
-EditPerson.propTypes = {
+EditPerson.propTypes =
+{
   params: PropTypes.object,
-  allPeople: ImmutablePropTypes.map,
-  editPerson: PropTypes.func.isRequired,
+  data: PropTypes.shape({
+    loading: PropTypes.bool.isRequired,
+    person: PropTypes.object,
+  }).isRequired,
+  editPerson: PropTypes.func.isrequired,
+  push: PropTypes.func.isRequired,
 };
 
+const PersonForDisplay = gql`
+  query ($id: Int!){
+    person(id: $id) {
+      id
+      name
+      number_coffee_drank
+      number_coffee_paid
+      coffee_price
+      created_at
+      updated_at
+      outingIds
+    }
+  },
+`;
+
+const EditPersonMutation = gql`
+  mutation($id: Int!, $name: String!, $coffeeCost: Float!) {
+    editPerson(
+      id: $id,
+      name: $name,
+      coffee_price: $coffeeCost
+    )
+    {
+      id
+      name
+      number_coffee_drank
+      number_coffee_paid
+      coffee_price
+      created_at
+      updated_at
+      outingIds
+    }
+  }
+`;
+
+const options = ({ params }) => ({ variables: { id: params.id } });
+const personQuery = graphql(PersonForDisplay, { options });
+const editPersonMutation = graphql(
+  EditPersonMutation, {
+    name: 'editPerson',
+  });
+const connectedComponent = personQuery(editPersonMutation(EditPerson));
+
 export default connect(
-state => ({
-  allPeople: getAllPeople(state),
-}),
-dispatch => ({
-  editPerson: (id, name, coffee) => dispatch(editPerson(id, name, coffee)),
-}))(EditPerson);
+  null,
+  dispatch => ({
+    push: (location) => dispatch(push(location)),
+  })
+)(connectedComponent);
