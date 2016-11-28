@@ -8,8 +8,6 @@ import gql from 'graphql-tag';
 import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 
-// import { getAllPeople, editPerson } from '../../../reducers/people';
-
 class EditPerson extends Component {
   constructor() {
     super();
@@ -99,7 +97,7 @@ EditPerson.propTypes =
 };
 
 const PersonForDisplay = gql`
-  query ($id: Int!){
+  query PersonForDisplay($id: Int!){
     person(id: $id) {
       id
       name
@@ -114,7 +112,7 @@ const PersonForDisplay = gql`
 `;
 
 const EditPersonMutation = gql`
-  mutation($id: Int!, $name: String!, $coffeeCost: Float!) {
+  mutation EditPersonMutation($id: Int!, $name: String!, $coffeeCost: Float!) {
     editPerson(
       id: $id,
       name: $name,

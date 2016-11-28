@@ -75,7 +75,7 @@ ViewPerson.propTypes = {
 };
 
 const AllPeopleForDisplay = gql`
-  query {
+  query AllPeopleForDisplay{
     allPeople: people {
       id
       name
