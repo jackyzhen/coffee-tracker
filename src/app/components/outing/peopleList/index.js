@@ -21,7 +21,11 @@ export default class PeopleList extends React.Component {
       },
     };
   }
-
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      chipData: nextProps.people,
+    });
+  }
   renderChip(data) {
     const { handleRequestDelete, handleTouchTap } = this.props;
     return (

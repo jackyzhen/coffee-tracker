@@ -2,7 +2,7 @@ import ApolloClient, { createNetworkInterface, addTypename, toIdValue } from 'ap
 
  // appollo client setup
 export default (() => {
-  const networkInterface = createNetworkInterface('/graphql'); // url
+  const networkInterface = createNetworkInterface({ uri: '/graphql' }); // url
   // this adds an auth header to every graphql request
   networkInterface.use([{
     applyMiddleware(req, next) {

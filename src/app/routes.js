@@ -8,24 +8,17 @@ import EditPerson from './components/people/editPerson/';
 import ViewPeople from './components/people/viewPeople/';
 import ViewOuting from './components/outing/viewOuting';
 import AddOuting from './components/outing/addOuting';
-import { fetchAllOutings } from './reducers/outing';
 
 
 module.exports = {
-  getRouter: (store) => {
-    const onEnterRoot = (nextState, replace, callback) => {
-      return store.dispatch(fetchAllOutings())
-              .then(() => {
-                callback();
-              });
-    };
+  getRouter: () => {
     const onEnterIndex = (nextState, replace, callback) => {
       replace('/outing');
       callback();
     };
     return (
       <Router history={browserHistory}>
-        <Route path="/" component={AppContainer} onEnter={onEnterRoot}>
+        <Route path="/" component={AppContainer}>
           <IndexRoute onEnter={onEnterIndex} />
           <Route path="people" component={PeopleContainer}>
             <IndexRoute component={ViewPeople} />

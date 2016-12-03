@@ -5,8 +5,8 @@ import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import { FormsyText } from 'formsy-material-ui/lib';
 import { graphql } from 'react-apollo';
-import gql from 'graphql-tag';
 import { push } from 'react-router-redux';
+import { AddPersonMutation } from '../../../graphqlQueries/peopleQueries';
 
 class AddPerson extends Component {
   constructor() {
@@ -81,24 +81,6 @@ AddPerson.propTypes = {
   addPerson: PropTypes.func.isRequired,
   push: PropTypes.func.isRequired,
 };
-
-const AddPersonMutation = gql`
-    mutation AddPersonMutation($name: String!, $coffeeCost: Float!) {
-      createPerson(
-        name: $name,
-        coffee_price: $coffeeCost
-      ){
-        id
-        name
-        number_coffee_drank
-        number_coffee_paid
-        coffee_price
-        created_at
-        updated_at
-        outingIds
-      }
-  }
-`;
 
 const connectedComponent = graphql(
   AddPersonMutation,

@@ -4,9 +4,9 @@ import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import { FormsyText } from 'formsy-material-ui/lib';
 import { graphql } from 'react-apollo';
-import gql from 'graphql-tag';
 import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
+import { PersonForDisplay, EditPersonMutation } from '../../../graphqlQueries/peopleQueries';
 
 class EditPerson extends Component {
   constructor() {
@@ -92,44 +92,9 @@ EditPerson.propTypes =
     loading: PropTypes.bool.isRequired,
     person: PropTypes.object,
   }).isRequired,
-  editPerson: PropTypes.func.isrequired,
+  editPerson: PropTypes.func.isRequired,
   push: PropTypes.func.isRequired,
 };
-
-const PersonForDisplay = gql`
-  query PersonForDisplay($id: Int!){
-    person(id: $id) {
-      id
-      name
-      number_coffee_drank
-      number_coffee_paid
-      coffee_price
-      created_at
-      updated_at
-      outingIds
-    }
-  },
-`;
-
-const EditPersonMutation = gql`
-  mutation EditPersonMutation($id: Int!, $name: String!, $coffeeCost: Float!) {
-    editPerson(
-      id: $id,
-      name: $name,
-      coffee_price: $coffeeCost
-    )
-    {
-      id
-      name
-      number_coffee_drank
-      number_coffee_paid
-      coffee_price
-      created_at
-      updated_at
-      outingIds
-    }
-  }
-`;
 
 const options = ({ params }) => ({ variables: { id: params.id } });
 const personQuery = graphql(PersonForDisplay, { options });

@@ -3,28 +3,23 @@ import { connect } from 'react-redux';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import Divider from 'material-ui/Divider';
-import ImmutablePropTypes from 'react-immutable-proptypes';
 import Chip from 'material-ui/Chip';
 import SvgIconFace from 'material-ui/svg-icons/action/face';
 import Avatar from 'material-ui/Avatar';
 import _ from 'lodash';
+import { push } from 'react-router-redux';
+import { graphql } from 'react-apollo';
 import PeopleList from '../peopleList';
-import { addOuting } from '../../../reducers/outing';
-import { getAllPeople } from '../../../reducers/people';
+import { AllPeopleForDisplay } from '../../../graphqlQueries/peopleQueries';
+import { AddOutingMutation } from '../../../graphqlQueries/outingQueries';
 
 class AddOuting extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       canSubmit: false,
-      notSplurging: props.allPeople.toArray().map(person => person.toJS()).map(p => ({
-        key: p.id,
-        label: p.name,
-        numCoffeeDrank: p.number_coffee_drank,
-        numCoffeePaid: p.number_coffee_paid,
-        coffeePrice: p.coffee_price || 0,
-        selected: false,
-      })),
+      notSplurging: [],
       splurgingHard: [],
       luckyWinner: null,
       totalCost: 0,
@@ -37,6 +32,21 @@ class AddOuting extends Component {
     this.getWinner = this.getWinner.bind(this);
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (!nextProps.data.allPeople) {
+      return;
+    }
+    this.setState({
+      notSplurging: nextProps.data.allPeople.map(p => ({
+        key: p.id,
+        label: p.name,
+        numCoffeeDrank: p.number_coffee_drank,
+        numCoffeePaid: p.number_coffee_paid,
+        coffeePrice: p.coffee_price || 0,
+        selected: false,
+      })),
+    });
+  }
   getWinner() {
     const { splurgingHard } = this.state;
     const groupings = _(splurgingHard).groupBy(p => p.numCoffeeDrank - p.numCoffeePaid).value();
@@ -70,7 +80,9 @@ class AddOuting extends Component {
 
   submitForm() {
     const { luckyWinner, totalCost, splurgingHard } = this.state;
-    this.props.addOuting(luckyWinner.key, totalCost, splurgingHard.map(p => p.key));
+    const { addOuting, push } = this.props;
+    addOuting(luckyWinner.key, totalCost, splurgingHard.map(p => p.key))
+      .then(push('/outing'));
   }
 
   addPerson(key) {
@@ -105,6 +117,9 @@ class AddOuting extends Component {
   }
 
   render() {
+    const { data: { loading } } = this.props;
+    if (loading) return null;
+
     const { notSplurging, splurgingHard, luckyWinner, totalCost } = this.state;
 
     return (
@@ -162,13 +177,33 @@ class AddOuting extends Component {
 
 AddOuting.propTypes = {
   addOuting: PropTypes.func.isRequired,
-  allPeople: ImmutablePropTypes.map,
+  push: PropTypes.func.isRequired,
+  data: PropTypes.shape({
+    loading: PropTypes.bool.isRequired,
+    allPeople: PropTypes.array,
+  }).isRequired,
 };
 
+const connectedComponent = graphql(AllPeopleForDisplay)(graphql(
+  AddOutingMutation,
+  {
+    props: ({ mutate }) => ({
+      addOuting: (payerId, totalCost, peopleIds) => mutate({
+        variables: { payerId, totalCost, peopleIds },
+        updateQueries: {
+          AllOutingsQuery: (prev, { mutationResult }) => {
+            const newOuting = mutationResult.data.createOuting;
+            return Object.assign({}, prev, { allOutings: prev.allOutings.concat([newOuting]) });
+          },
+        },
+      }),
+    }),
+  }
+)(AddOuting));
+
 export default connect(
-state => ({
-  allPeople: getAllPeople(state),
-}),
-dispatch => ({
-  addOuting: (payerId, totalCost, peopleIds) => dispatch(addOuting(payerId, totalCost, peopleIds)),
-}))(AddOuting);
+  null,
+  dispatch => ({
+    push: (location) => dispatch(push(location)),
+  })
+)(connectedComponent);

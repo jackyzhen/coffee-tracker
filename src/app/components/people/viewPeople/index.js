@@ -6,7 +6,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import { graphql } from 'react-apollo';
-import gql from 'graphql-tag';
+import { AllPeopleForDisplay } from '../../../graphqlQueries/peopleQueries';
 
 class ViewPerson extends Component {
   constructor() {
@@ -17,14 +17,14 @@ class ViewPerson extends Component {
 
   editUser(row) {
     const { data: { allPeople } } = this.props;
-    browserHistory.push(`people/edit/${allPeople[row[0]].id}`);
+    browserHistory.push(`/people/edit/${allPeople[row[0]].id}`);
   }
   addUser() {
-    browserHistory.push('people/add');
+    browserHistory.push('/people/add');
   }
   personRow() {
     const { data: { allPeople, loading } } = this.props;
-    if (loading) return <div />;
+    if (loading) return null;
     return allPeople.map(person => {
       return (
         <TableRow key={person.id}>
@@ -74,23 +74,4 @@ ViewPerson.propTypes = {
   }).isRequired,
 };
 
-const AllPeopleForDisplay = gql`
-  query AllPeopleForDisplay{
-    allPeople: people {
-      id
-      name
-      number_coffee_drank
-      number_coffee_paid
-      coffee_price
-      created_at
-      updated_at
-      outingIds
-    }
-  },
-`;
-
 export default graphql(AllPeopleForDisplay)(ViewPerson);
-// export default connect(
-// state => ({
-//   allPeople: getAllPeople(state),
-// }))(ViewPerson);
