@@ -11,14 +11,9 @@ import SmartTable from '../../SmartTable';
 class ViewPerson extends Component {
   constructor() {
     super();
-    this.editUser = this.editUser.bind(this);
     this.data = this.data.bind(this);
   }
 
-  editUser(row) {
-    const { data: { allPeople } } = this.props;
-    browserHistory.push(`/people/edit/${allPeople[row[0]].id}`);
-  }
   addUser() {
     browserHistory.push('/people/add');
   }
@@ -36,6 +31,7 @@ class ViewPerson extends Component {
       };
     });
   }
+
   render() {
     const tableHeaders = [
       { alias: 'Name', sortable: true, dataAlias: 'name', format: { type: 'link', url: '/people/edit' } },
@@ -53,7 +49,7 @@ class ViewPerson extends Component {
       >
         <div style={{ padding: '5px 0px 5px 20px' }}> <h3>People</h3> </div>
         <Divider />
-        <SmartTable {...{ tableHeaders, data, total: data.length, limit: 10, onRowSelect: this.editUser }} />
+        <SmartTable {...{ tableHeaders, data, total: data.length, limit: 10, isLoading: this.props.data.loading }} />
         <FloatingActionButton onTouchTap={this.addUser} backgroundColor="#6d8165" style={{ position: 'fixed', bottom: '5%', right: '3%' }}>
           <ContentAdd />
         </FloatingActionButton>
