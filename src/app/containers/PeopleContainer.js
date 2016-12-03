@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
 
 function PeopleContainer(props) {
   return (
@@ -15,4 +14,4 @@ PeopleContainer.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export default connect()(PeopleContainer);
+export default PeopleContainer;

@@ -1,24 +1,17 @@
-import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
+import React, { PropTypes } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import App from '../components/app';
 
-class AppContainer extends Component {
-  constructor() {
-    super();
-  }
-
-  render() {
-    return (
-      <MuiThemeProvider>
-        <App children={this.props.children} />
-      </MuiThemeProvider>
-    );
-  }
+function AppContainer(props) {
+  return (
+    <MuiThemeProvider>
+      <App children={props.children} />
+    </MuiThemeProvider>
+  );
 }
 
 AppContainer.displayName = 'AppContainer';
 AppContainer.propTypes = {
   children: PropTypes.node.isRequired,
 };
-export default connect()(AppContainer);
+export default AppContainer;

@@ -1,14 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
-import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
-import ImmutablePropTypes from 'react-immutable-proptypes';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
-import { getAllOutings } from '../../../reducers/outing';
-import { getAllPeople } from '../../../reducers/people';
+import { graphql } from 'react-apollo';
+import { AllOutingsAllPeopleQuery } from '../../../graphqlQueries/outingQueries';
 
 class ViewOuting extends Component {
   constructor() {
@@ -16,14 +14,15 @@ class ViewOuting extends Component {
     this.outingRow = this.outingRow.bind(this);
   }
   addOuting() {
-    browserHistory.push('outing/add');
+    browserHistory.push('/outing/add');
   }
   outingRow() {
-    const { allOutings, allPeople } = this.props;
-    const sortedOutings = allOutings.toArray().map(o => o.toJS()).sort((a, b) => b.id - a.id);
+    const { data: { allOutings, allPeople, loading } } = this.props;
+    if (loading) return null;
+    const sortedOutings = allOutings.sort((a, b) => b.id - a.id);
     return sortedOutings.map(outing => {
-      const payer = allPeople.get(outing.payer_id).get('name');
-      const people = outing.personIds.map(id => allPeople.get(id).get('name')).join(', ');
+      const payer = allPeople.find(p => p.id === outing.payer_id).name;
+      const people = outing.personIds.map(id => allPeople.find(p => p.id === id).name).join(', ');
       const dateTime = outing.created_at;
       return (
         <TableRow key={outing.id}>
@@ -58,7 +57,7 @@ class ViewOuting extends Component {
             {this.outingRow()}
           </TableBody>
         </Table>
-        <FloatingActionButton onTouchTap={this.addOuting} backgroundColor="#6d8165" style={{ position: 'fixed', bottom: '5%', right: '3%', }}>
+        <FloatingActionButton onTouchTap={this.addOuting} backgroundColor="#6d8165" style={{ position: 'fixed', bottom: '5%', right: '3%' }}>
           <ContentAdd />
         </FloatingActionButton>
       </Paper>
@@ -67,12 +66,11 @@ class ViewOuting extends Component {
 }
 
 ViewOuting.propTypes = {
-  allOutings: ImmutablePropTypes.map,
-  allPeople: ImmutablePropTypes.map,
+  data: PropTypes.shape({
+    loading: PropTypes.bool.isRequired,
+    allPeople: PropTypes.array,
+    allOutings: PropTypes.array,
+  }).isRequired,
 };
 
-export default connect(
-state => ({
-  allOutings: getAllOutings(state),
-  allPeople: getAllPeople(state),
-}))(ViewOuting);
+export default graphql(AllOutingsAllPeopleQuery)(ViewOuting);

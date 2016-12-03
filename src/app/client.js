@@ -1,14 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware, compose } from 'redux';
-import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import 'isomorphic-fetch';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import { browserHistory } from 'react-router';
 import { routerMiddleware } from 'react-router-redux';
+import { ApolloProvider } from 'react-apollo';
 import rootReducer from './reducer';
 import { getRouter } from './routes';
+import client from './apollo';
 
 
 // Needed for onTouchTap
@@ -49,16 +50,17 @@ function configureMiddlewares() {
 const middlewares = configureMiddlewares();
 
 const store = createStore(
-  rootReducer,
+  rootReducer(client),
   compose(
-    applyMiddleware(...middlewares),
+    applyMiddleware(...middlewares, client.middleware()),
     window.devToolsExtension ? window.devToolsExtension() : f => f
   )
 );
 
+
 ReactDOM.render(
-  <Provider store={store}>
+  <ApolloProvider store={store} client={client}>
     {getRouter(store)}
-  </Provider>,
+  </ApolloProvider>,
   document.getElementById('app')
 );

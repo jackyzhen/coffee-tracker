@@ -4,8 +4,9 @@ import Formsy from 'formsy-react';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import { FormsyText } from 'formsy-material-ui/lib';
-
-import { addPerson } from '../../../reducers/people';
+import { graphql } from 'react-apollo';
+import { push } from 'react-router-redux';
+import { AddPersonMutation } from '../../../graphqlQueries/peopleQueries';
 
 class AddPerson extends Component {
   constructor() {
@@ -27,8 +28,10 @@ class AddPerson extends Component {
       canSubmit: false,
     });
   }
-  submitForm(data) {
-    this.props.addPerson(data.name, data.price);
+  submitForm({ name, price }) {
+    const { addPerson, push } = this.props;
+    addPerson(name, price)
+    .then(push('/people'));
   }
   render() {
     return (
@@ -76,9 +79,29 @@ class AddPerson extends Component {
 
 AddPerson.propTypes = {
   addPerson: PropTypes.func.isRequired,
+  push: PropTypes.func.isRequired,
 };
 
-export default connect(null,
-dispatch => ({
-  addPerson: (name, coffee) => dispatch(addPerson(name, coffee)),
-}))(AddPerson);
+const connectedComponent = graphql(
+  AddPersonMutation,
+  {
+    props: ({ mutate }) => ({
+      addPerson: (name, coffeeCost) => mutate({
+        variables: { name, coffeeCost },
+        updateQueries: {
+          AllPeopleForDisplay: (prev, { mutationResult }) => {
+            const newPerson = mutationResult.data.createPerson;
+            return Object.assign({}, prev, { allPeople: prev.allPeople.concat([newPerson]) });
+          },
+        },
+      }),
+    }),
+  }
+)(AddPerson);
+
+export default connect(
+  null,
+  dispatch => ({
+    push: (location) => dispatch(push(location)),
+  })
+)(connectedComponent);
