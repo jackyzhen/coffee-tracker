@@ -40,6 +40,10 @@ app.use(express.static('dist', {
   cacheControl: false,
 }));
 
+app.use(express.static('static', {
+  cacheControl: false,
+}));
+
 // redirect all 404s to index.html
 app.use((req, res) => {
   res.sendFile(path.resolve(__dirname, 'index.html'), {
