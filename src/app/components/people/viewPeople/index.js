@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import { browserHistory } from 'react-router';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
@@ -7,36 +6,40 @@ import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import { graphql } from 'react-apollo';
 import { AllPeopleForDisplay } from '../../../graphqlQueries/peopleQueries';
+import SmartTable from '../../SmartTable';
 
 class ViewPerson extends Component {
   constructor() {
     super();
-    this.personRow = this.personRow.bind(this);
-    this.editUser = this.editUser.bind(this);
+    this.data = this.data.bind(this);
   }
 
-  editUser(row) {
-    const { data: { allPeople } } = this.props;
-    browserHistory.push(`/people/edit/${allPeople[row[0]].id}`);
-  }
   addUser() {
     browserHistory.push('/people/add');
   }
-  personRow() {
+
+  data() {
     const { data: { allPeople, loading } } = this.props;
-    if (loading) return null;
+    if (loading || !allPeople) return [];
     return allPeople.map(person => {
-      return (
-        <TableRow key={person.id}>
-          <TableRowColumn>{person.name}</TableRowColumn>
-          <TableRowColumn>{person.number_coffee_drank}</TableRowColumn>
-          <TableRowColumn>{person.number_coffee_paid}</TableRowColumn>
-          <TableRowColumn>$ {person.coffee_price.toFixed(2)}</TableRowColumn>
-        </TableRow>
-      );
+      return {
+        name: person.name,
+        coffees_drank: person.number_coffee_drank,
+        coffees_paid: person.number_coffee_paid,
+        coffees_price: person.coffee_price,
+        id: person.id,
+      };
     });
   }
+
   render() {
+    const tableHeaders = [
+      { alias: 'Name', sortable: true, dataAlias: 'name', format: { type: 'link', url: '/people/edit' } },
+      { alias: 'Coffees Drank', sortable: true, dataAlias: 'coffees_drank' },
+      { alias: 'Coffees Paid', sortable: true, dataAlias: 'coffees_paid' },
+      { alias: 'Coffees Price', sortable: true, dataAlias: 'coffees_price', format: { type: 'money' } },
+    ];
+    const data = this.data();
     return (
       <Paper
         style={{
@@ -46,19 +49,7 @@ class ViewPerson extends Component {
       >
         <div style={{ padding: '5px 0px 5px 20px' }}> <h3>People</h3> </div>
         <Divider />
-        <Table onRowSelection={this.editUser} >
-          <TableHeader adjustForCheckbox={false} displaySelectAll={false} style={{ color: '#3d3327' }}>
-            <TableRow>
-              <TableHeaderColumn>Name</TableHeaderColumn>
-              <TableHeaderColumn>Coffees Drank</TableHeaderColumn>
-              <TableHeaderColumn>Coffees Paid</TableHeaderColumn>
-              <TableHeaderColumn>Coffee Price</TableHeaderColumn>
-            </TableRow>
-          </TableHeader>
-          <TableBody displayRowCheckbox={false} showRowHover>
-            {this.personRow()}
-          </TableBody>
-        </Table>
+        <SmartTable {...{ tableHeaders, data, total: data.length, limit: 10, isLoading: this.props.data.loading }} />
         <FloatingActionButton onTouchTap={this.addUser} backgroundColor="#6d8165" style={{ position: 'fixed', bottom: '5%', right: '3%' }}>
           <ContentAdd />
         </FloatingActionButton>
