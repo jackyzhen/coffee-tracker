@@ -15,7 +15,7 @@ export default (cell, format, row) => {
         />
       );
     case 'date':
-      return new Date();
+      return `${new Date(cell).toDateString()} ${new Date(cell).toLocaleTimeString()}`;
     case 'percentage':
       return `${numeral(cell).format('0.0')}%`;
     case 'money':

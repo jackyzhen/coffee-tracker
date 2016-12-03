@@ -19,14 +19,14 @@ class ViewOuting extends Component {
   data() {
     const { data: { allOutings, allPeople, loading } } = this.props;
     if (loading) return [];
-    const sortedOutings = allOutings.sort((a, b) => b.id - a.id);
+    const sortedOutings = allOutings.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
     return sortedOutings.map(outing => {
       const payer = allPeople.find(p => p.id === outing.payer_id).name;
       const people = outing.personIds.map(id => allPeople.find(p => p.id === id).name).join(', ');
       const dateTime = outing.created_at;
       return {
         id: outing.id,
-        when: `${new Date(dateTime).toDateString()} ${new Date(dateTime).toLocaleTimeString()}`,
+        when: dateTime, // `${new Date(dateTime).toDateString()} ${new Date(dateTime).toLocaleTimeString()}`,
         who_paid: payer,
         who_went: people,
         total_cost: outing.total_cost,
@@ -35,7 +35,7 @@ class ViewOuting extends Component {
   }
   render() {
     const tableHeaders = [
-      { alias: 'When', sortable: true, dataAlias: 'when' },
+      { alias: 'When', sortable: true, dataAlias: 'when', format: { type: 'date' } },
       { alias: 'Payer', sortable: true, dataAlias: 'who_paid' },
       { alias: 'Drinkers', sortable: false, dataAlias: 'who_went' },
       { alias: 'Total', sortable: true, dataAlias: 'total_cost', format: { type: 'money' } },

@@ -8,7 +8,10 @@ import styles from './SmartTable.css';
 import SmartTableRow from '../SmartTableRow/SmartTableRow';
 import TableSpinner from '../TableSpinner/TableSpinner';
 
-function sortFunc(a, b, key) {
+function sortFunc(a, b, key, format) {
+  if (format && format.type === 'date') {
+    return new Date(a[key]).getTime() - new Date(b[key]).getTime();
+  }
   if (typeof (a[key]) === 'number') {
     return a[key] - b[key];
   }
@@ -81,9 +84,9 @@ class SmartTable extends Component {
     });
   }
 
-  sortByColumn(sortHeader, data, limit) {
+  sortByColumn(sortHeader, data, limit, format) {
     const isAsc = this.state.sortHeader === sortHeader ? !this.state.isAsc : true;
-    const sortedData = data.sort((a, b) => sortFunc(a, b, sortHeader));
+    const sortedData = data.sort((a, b) => sortFunc(a, b, sortHeader, format));
 
     if (!isAsc) {
       sortedData.reverse();
@@ -123,7 +126,7 @@ class SmartTable extends Component {
                     <SortIcon
                       id={header.dataAlias}
                       className={styles.sortIcon}
-                      onMouseUp={(e) => this.sortByColumn(e.target.id, this.state.data, limit)}
+                      onMouseUp={(e) => this.sortByColumn(e.target.id, this.state.data, limit, header.format)}
                     />
                   }
                 </div>
