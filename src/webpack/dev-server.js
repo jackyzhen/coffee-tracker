@@ -55,6 +55,9 @@ app.use('/graphql', (req, res, next) => {
     }))(req, res);
 });
 
+// serve static files
+app.use(express.static('static'));
+
 app.use((req, res) => {
   const index = path.resolve(__dirname, 'index.html');
   res.sendFile(index);
