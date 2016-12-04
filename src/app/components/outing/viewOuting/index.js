@@ -26,7 +26,7 @@ class ViewOuting extends Component {
       const dateTime = outing.created_at;
       return {
         id: outing.id,
-        when: dateTime, // `${new Date(dateTime).toDateString()} ${new Date(dateTime).toLocaleTimeString()}`,
+        when: dateTime,
         who_paid: payer,
         who_went: people,
         total_cost: outing.total_cost,
@@ -34,13 +34,15 @@ class ViewOuting extends Component {
     });
   }
   render() {
+    const { data: { allOutings, loading } } = this.props;
     const tableHeaders = [
-      { alias: 'When', sortable: true, dataAlias: 'when', format: { type: 'date' } },
+      { alias: 'When', sortable: true, dataAlias: 'when', format: { type: 'date', url: '/outing' } },
       { alias: 'Payer', sortable: true, dataAlias: 'who_paid' },
       { alias: 'Drinkers', sortable: false, dataAlias: 'who_went' },
       { alias: 'Total', sortable: true, dataAlias: 'total_cost', format: { type: 'money' } },
     ];
     const data = this.data();
+    const totalCost = loading ? 0 : allOutings.map(o => o.total_cost).reduce((a, b) => a + b);
     return (
       <Paper
         style={{
@@ -48,7 +50,10 @@ class ViewOuting extends Component {
           marginBottom: '3%',
         }}
       >
-        <div style={{ padding: '5px 0px 5px 20px' }}> <h3>Outings</h3> </div>
+        <div style={{ padding: '5px 0px 5px 20px' }}>
+          <h3>Outings</h3>
+          {!loading && <h5><em>Overall total coffee spenditure: ${totalCost.toFixed(2)}</em></h5>}
+        </div>
         <Divider />
         <SmartTable {...{ tableHeaders, data, total: data.length, limit: 10, isLoading: this.props.data.loading }} />
         <FloatingActionButton onTouchTap={this.addOuting} backgroundColor="#6d8165" style={{ position: 'fixed', bottom: '5%', right: '3%' }}>

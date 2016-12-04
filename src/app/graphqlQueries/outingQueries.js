@@ -22,6 +22,28 @@ export const AllOutingsAllPeopleQuery = gql`
   }
 `;
 
+export const OutingQuery = gql`
+  query OutingQuery($id: Int!){
+    outing(id: $id) {
+      id
+      payer_id
+      total_cost
+      created_at
+      personIds
+    }
+    allPeople: people {
+      id
+      name
+      number_coffee_drank
+      number_coffee_paid
+      coffee_price
+      created_at
+      updated_at
+      outingIds
+    }
+  },
+`;
+
 export const AddOutingMutation = gql`
   mutation AddOutingMutation($payerId: Int!, $totalCost: Float!, $peopleIds: [Int]!) {
     createOuting (

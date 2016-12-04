@@ -14,8 +14,13 @@ export default (cell, format, row) => {
           label={`${format.text}`}
         />
       );
-    case 'date':
-      return `${new Date(cell).toDateString()} ${new Date(cell).toLocaleTimeString()}`;
+    case 'date': {
+      const value = `${new Date(cell).toDateString()} ${new Date(cell).toLocaleTimeString()}`;
+      if (format.url) {
+        return <Link style={{ color: 'black' }} to={`${format.url}/${row.id}`}>{ value }</Link>;
+      }
+      return value;
+    }
     case 'percentage':
       return `${numeral(cell).format('0.0')}%`;
     case 'money':
