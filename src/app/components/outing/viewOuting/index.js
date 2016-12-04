@@ -52,7 +52,7 @@ class ViewOuting extends Component {
       >
         <div style={{ padding: '5px 0px 5px 20px' }}>
           <h3>Outings</h3>
-          {!loading && <h5><em>Overall total coffee spenditure: ${totalCost.toFixed(2)}</em></h5>}
+          {!loading && <h5><em>Overall total coffee spending: ${totalCost.toFixed(2)}</em></h5>}
         </div>
         <Divider />
         <SmartTable {...{ tableHeaders, data, total: data.length, limit: 10, isLoading: this.props.data.loading }} />
