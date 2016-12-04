@@ -33,6 +33,9 @@ class ViewPerson extends Component {
   }
 
   render() {
+    const { data: { allPeople, loading } } = this.props;
+    const totalDrank = loading ? 0 : allPeople.map(p => p.number_coffee_drank).reduce((a, b) => a + b);
+
     const tableHeaders = [
       { alias: 'Name', sortable: true, dataAlias: 'name', format: { type: 'link', url: '/people/edit' } },
       { alias: 'Coffees Drank', sortable: true, dataAlias: 'coffees_drank' },
@@ -47,7 +50,10 @@ class ViewPerson extends Component {
           marginBottom: '3%',
         }}
       >
-        <div style={{ padding: '5px 0px 5px 20px' }}> <h3>People</h3> </div>
+        <div style={{ padding: '5px 0px 5px 20px' }}>
+          <h3>People</h3>
+          {!loading && <h5><em>Overall total coffees consumed: {totalDrank}</em></h5>}
+        </div>
         <Divider />
         <SmartTable {...{ tableHeaders, data, total: data.length, limit: 10, isLoading: this.props.data.loading }} />
         <FloatingActionButton onTouchTap={this.addUser} backgroundColor="#6d8165" style={{ position: 'fixed', bottom: '5%', right: '3%' }}>

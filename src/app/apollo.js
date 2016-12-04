@@ -34,6 +34,7 @@ export default (() => {
     customResolvers: {
       Query: {
         person: (_, args) => toIdValue(dataIdFromObject({ __typename: 'personType', id: args.id })),
+        outing: (_, args) => toIdValue(dataIdFromObject({ __typename: 'outingType', id: args.id })),
       },
     },
     // adds the __typename field to every query, so we can use it to better resolve cache
