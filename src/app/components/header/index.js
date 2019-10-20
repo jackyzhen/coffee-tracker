@@ -10,7 +10,7 @@ export default function Header({ onMenuTap }) {
         style={{ background: '#564032' }}
       />
     </div>
-    );
+  );
 }
 
 Header.displayName = 'Header';
